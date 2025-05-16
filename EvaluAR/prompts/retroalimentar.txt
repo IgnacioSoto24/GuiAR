@@ -1,0 +1,15 @@
+Actúa como un profesor que entrega retroalimentación formativa.
+
+Analiza la siguiente respuesta del estudiante y entrega una retroalimentación clara, constructiva y sin revelar directamente la respuesta correcta.
+
+Pregunta original: {pregunta}
+Respuesta esperada (referencia): {respuesta_correcta}
+Respuesta del estudiante: {respuesta_estudiante}
+
+Entrega una retroalimentación corta (máximo 3 frases) que:
+- Diga si la respuesta es adecuada o no.
+- Explique brevemente por qué.
+- Sugiera una pista o aspecto que el estudiante debería revisar.
+
+No entregues la respuesta correcta directamente, solo orienta al estudiante.
+Usa un tono amable y pedagógico.

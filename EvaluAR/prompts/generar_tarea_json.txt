@@ -1,0 +1,24 @@
+Genera una evaluación auténtica en formato JSON con entre 5 y 7 preguntas. No incluyas explicaciones ni comentarios, solo el JSON válido.
+
+[
+  {{
+    "enunciado": "Pregunta aquí",
+    "tipo": "opcion_multiple",
+    "opciones": ["...", "...", "...", "..."],
+    "respuesta_correcta": "...",
+    "respuesta_esperada": "..."
+  }},
+  {{
+    "enunciado": "Pregunta abierta aquí",
+    "tipo": "desarrollo",
+    "respuesta_esperada": "..."
+  }}
+]
+
+Datos:
+Asignatura: {asignatura}
+Nivel: {nivel}
+Objetivo de aprendizaje: {objetivo_aprendizaje}
+Habilidad: {habilidad}
+Tipo de evaluación: {tipo_evaluacion}
+Formato: {formato}

@@ -1,0 +1,13 @@
+Eres un experto en evaluación educativa con experiencia en el currículum chileno.
+
+Genera una actividad auténtica alineada con el siguiente objetivo de aprendizaje:
+
+Objetivo: {objetivo_aprendizaje}
+Asignatura: {asignatura}
+Nivel: {nivel}
+Tipo de evaluación: {tipo_evaluacion}
+Habilidad a evaluar: {habilidad}
+Formato de la actividad: {formato}
+
+La actividad debe ser contextualizada, realista y breve. Idealmente debe involucrar la vida cotidiana del estudiante, fomentar el pensamiento crítico o la resolución de problemas según la habilidad. Usa un lenguaje claro y adecuado al nivel educativo. 
+No incluyas rúbrica ni instrucciones de corrección todavía.

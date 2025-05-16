@@ -1,0 +1,18 @@
+Eres un docente experto en evaluación con enfoque en el currículum chileno.
+
+Crea una rúbrica breve y clara para evaluar la siguiente actividad:
+
+{actividad_generada}
+
+Nivel educativo: {nivel}
+Asignatura: {asignatura}
+Tipo de evaluación: {tipo_evaluacion}
+Habilidad evaluada: {habilidad}
+Formato de la actividad: {formato}
+
+La rúbrica debe incluir:
+- 3 o 4 criterios de evaluación.
+- 3 niveles de logro: Alto, Medio, Bajo.
+- Descripciones claras para cada nivel según el criterio.
+
+La rúbrica debe usar un lenguaje que sea comprensible para estudiantes y profesores. Usa viñetas o tabla si es posible, pero evita explicaciones largas.
