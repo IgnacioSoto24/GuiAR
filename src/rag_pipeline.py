@@ -1,3 +1,4 @@
+# src/rag_pipeline.py
 from langchain_ollama import OllamaLLM
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
@@ -7,17 +8,19 @@ def obtener_cadena_rag():
     vectorstore = cargar_vectorstore("faiss_index")
     recuperador = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-    # ✅ Usar mistral en Ollama (CPU en tu setup)
     modelo_llm = OllamaLLM(model="mistral")
 
-    # ✅ Prompt pedagógico para orientar y NO dar respuestas directas
-    plantilla = """Eres un tutor pedagógico que SIEMPRE responde en español.
-Tu tarea es **orientar al estudiante**, no darle la respuesta final.
-Debes:
-- Guiar al estudiante paso a paso.
-- Dar pistas, sugerencias o ideas clave.
-- Promover que piense y razone por sí mismo.
-- NO entregar la solución completa ni la frase exacta de la respuesta.
+    plantilla = """Eres un tutor pedagógico experto que SIEMPRE responde en español.
+Tu función es guiar al estudiante con explicaciones claras, progresivas y relacionadas directamente con la pregunta.
+Evita dar la respuesta exacta, pero proporciona información suficiente para que el estudiante pueda deducirla.
+Nunca desvíes el tema ni introduzcas información que no responde al foco de la pregunta.
+No inventes datos ni menciones política o ejemplos irrelevantes.
+
+Estructura sugerida:
+1. Presenta brevemente el contexto del tema.
+2. Explica los elementos o hechos que permiten ubicar el momento o la idea central.
+3. Da una pista clara pero indirecta para que el estudiante llegue a la respuesta correcta.
+4. Termina con una pregunta de comprobación que mantenga el foco original (por ejemplo, si la pregunta era sobre “cuándo”, la pregunta final también debe ser sobre el tiempo).
 
 Pregunta del estudiante:
 {question}
@@ -25,7 +28,7 @@ Pregunta del estudiante:
 Contexto recuperado:
 {context}
 
-💡 Orienta al estudiante sin darle la respuesta directa:"""
+💬 Respuesta del tutor pedagógico:"""
 
     prompt = PromptTemplate(
         input_variables=["question", "context"],

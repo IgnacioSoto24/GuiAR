@@ -6,20 +6,21 @@ import os
 st.set_page_config(page_title="GuiAR - Tutor Pedagógico", layout="wide")
 st.title("📘 GuiAR: Tutor Pedagógico con IA")
 
-# --- Botón opcional para subir PDF ---
 archivo_pdf = st.file_uploader("📂 Subir un PDF adicional (opcional)", type="pdf")
 
 if archivo_pdf is not None:
-    ruta_guardado = os.path.join("data", archivo_pdf.name)
-    with open(ruta_guardado, "wb") as f:
-        f.write(archivo_pdf.getbuffer())
-    construir_vectorstore(ruta_guardado, "faiss_index")
-    st.success(f"✅ El archivo {archivo_pdf.name} fue procesado y agregado al tutor")
+    st.info(f"Has cargado el archivo: {archivo_pdf.name}")
+    
+    if st.button("Procesar PDF"):
+        ruta_guardado = os.path.join("data", archivo_pdf.name)
+        with open(ruta_guardado, "wb") as f:
+            f.write(archivo_pdf.getbuffer())
+        
+        construir_vectorstore(ruta_guardado, "faiss_index")
+        st.success(f"✅ El archivo {archivo_pdf.name} fue procesado y agregado al tutor")
 
-# --- Inicializar pipeline RAG ---
 cadena_rag = obtener_cadena_rag()
 
-# --- Entrada del usuario ---
 pregunta = st.text_input("✍️ Haz tu consulta:")
 
 if pregunta:
@@ -29,7 +30,6 @@ if pregunta:
     st.write("### 💡 Orientación del tutor:")
     st.write(respuesta)
 
-    # --- Evaluación con métricas ---
     st.subheader("📊 Evaluación de la respuesta")
     if st.button("Evaluar con métricas"):
         from deepeval.metrics import (
@@ -43,7 +43,6 @@ if pregunta:
         from deepeval.models import OllamaModel
         from deepeval import evaluate
 
-        # Contexto mínimo para que no falle Faithfulness
         contexto = ["Fragmentos recuperados desde FAISS o texto de apoyo"]
 
         caso = LLMTestCase(
@@ -51,7 +50,7 @@ if pregunta:
             actual_output=respuesta,
             expected_output="Referencia curricular o respuesta esperada oficial.",
             retrieval_context=contexto,
-            tools_called=[]  # necesario para ArgumentCorrectnessMetric
+            tools_called=[],
         )
 
         modelo_local = OllamaModel(model="mistral")
@@ -64,16 +63,6 @@ if pregunta:
             ArgumentCorrectnessMetric(model=modelo_local),
         ]
 
-        # ✅ Ejecutar evaluación
-        resultado = evaluate([caso], metricas)
-
-        # ✅ Convertir resultados a JSON serializable
-        tabla = {}
-        for m in resultado.metrics:   # 🔥 antes era .metrics_data
-            tabla[m.name] = {
-                "score": m.score,
-                "threshold": m.threshold,
-                "reason": m.reason,
-            }
-
-        st.json(tabla)
+        st.info("🧮 Ejecutando evaluación... revisa la terminal para ver los resultados.")
+        evaluate([caso], metricas)
+        st.success("✅ Evaluación completada. Revisa los resultados en la terminal.")
