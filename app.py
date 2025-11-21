@@ -1,83 +1,94 @@
 import streamlit as st
-from src.rag_pipeline import obtener_cadena_rag
-from src.ingestion import construir_vectorstore
 import os
 
-st.set_page_config(page_title="GuiAR - Tutor Pedagógico", layout="wide")
-st.title("📘 GuiAR: Tutor Pedagógico con IA")
+from src.ingestion import construir_vectorstore
+from src.classifier import clasificar_pregunta
+from src.rag_pipeline import obtener_cadena_rag
 
-archivo_pdf = st.file_uploader("📂 Subir un PDF adicional (opcional)", type="pdf")
+st.set_page_config(
+    page_title="GuiAR - Tutor Pedagógico",
+    layout="wide",
+    page_icon="📘"
+)
 
-if archivo_pdf is not None:
-    st.info(f"Has cargado el archivo: {archivo_pdf.name}")
-    if st.button("Procesar PDF"):
-        ruta_guardado = os.path.join("data", archivo_pdf.name)
-        with open(ruta_guardado, "wb") as f:
-            f.write(archivo_pdf.getbuffer())
-        construir_vectorstore(ruta_guardado, "faiss_index")
-        st.success(f"✅ El archivo {archivo_pdf.name} fue procesado y agregado al tutor")
+st.markdown("""
+<style>
+body {
+    background-color: #F5F7FA;
+}
+.block {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #dcdcdc;
+    margin-bottom: 20px;
+}
+.title {
+    color: #2C3E50;
+}
+</style>
+""", unsafe_allow_html=True)
 
-nivel = st.radio(
-    "🎓 Selecciona el nivel educativo del estudiante:",
-    ["Básico", "Medio", "Avanzado"],
-    index=1
-).lower()
+with st.sidebar:
+    st.header("⚙️ Configuración")
 
-pregunta = st.text_input("✍️ Escribe tu pregunta o consulta:")
+    asignatura_usuario = st.selectbox(
+        "📘 Asignatura (preferida):",
+        ["historia", "lenguaje", "matematicas", "ciencias", "ingles", "geografia"]
+    )
 
-if "ultima_pregunta" not in st.session_state:
-    st.session_state.ultima_pregunta = ""
+    nivel = st.radio(
+        "🎓 Nivel de guía",
+        ["breve", "intermedio", "profundo"],
+        index=1
+    )
 
-if pregunta and pregunta != st.session_state.ultima_pregunta:
-    st.session_state.ultima_pregunta = pregunta
-    cadena_rag = obtener_cadena_rag(nivel=nivel)
+    archivo_pdf = st.file_uploader("📄 Subir PDF para esta asignatura", type="pdf")
 
-    with st.spinner("Generando orientación del tutor..."):
-        respuesta = cadena_rag.run(pregunta)
+    if archivo_pdf is not None:
+        if st.button("Procesar PDF"):
+            ruta = os.path.join("data", archivo_pdf.name)
+            with open(ruta, "wb") as f:
+                f.write(archivo_pdf.getbuffer())
 
-    st.markdown("### 💡 Orientación del tutor:")
-    st.write(respuesta)
+            try:
+                construir_vectorstore(ruta, asignatura_usuario)
+                st.success(f"✔ PDF procesado correctamente para **{asignatura_usuario}**")
+            except Exception as e:
+                st.error(f"⚠ Error procesando PDF: {str(e)}")
 
-    st.session_state.respuesta = respuesta
+st.title("📘 GuiAR — Tutor Pedagógico Inteligente")
 
-elif "respuesta" in st.session_state:
-    st.markdown("### 💡 Orientación del tutor:")
-    st.write(st.session_state.respuesta)
+pregunta = st.text_input("✍️ Escribe tu pregunta:")
 
-if pregunta and "respuesta" in st.session_state:
-    st.subheader("📊 Evaluación de la respuesta")
-    if st.button("Evaluar con métricas"):
-        from deepeval.metrics import (
-            AnswerRelevancyMetric,
-            FaithfulnessMetric,
-            ContextualRecallMetric,
-            ToxicityMetric,
-            ArgumentCorrectnessMetric,
+if pregunta:
+    asignatura_predicha = clasificar_pregunta(pregunta, asignatura_usuario)
+
+    st.info(f"📌 Asignatura detectada: **{asignatura_predicha}**")
+
+    if asignatura_predicha != asignatura_usuario:
+        st.warning(
+            f"❗ Esta pregunta NO corresponde a la asignatura seleccionada ({asignatura_usuario})."
         )
-        from deepeval.test_case import LLMTestCase
-        from deepeval.models import OllamaModel
-        from deepeval import evaluate
+        st.write(f"➡ La pregunta pertenece a **{asignatura_predicha}**.")
+        st.stop()
 
-        contexto = ["Fragmentos recuperados desde FAISS o texto de apoyo"]
+    try:
+        cadena = obtener_cadena_rag(asignatura_usuario, nivel)
+        respuesta = cadena.run(pregunta)
 
-        caso = LLMTestCase(
-            input=pregunta,
-            actual_output=st.session_state.respuesta,
-            expected_output="Referencia curricular o respuesta esperada oficial.",
-            retrieval_context=contexto,
-            tools_called=[],
+        st.markdown(f"""
+        <div class='block'>
+          <h3 class='title'>💡 Orientación del tutor ({nivel})</h3>
+          {respuesta}
+        </div>
+        """, unsafe_allow_html=True)
+
+    except FileNotFoundError:
+        st.error(
+            f"❌ No existe un vectorstore para **{asignatura_usuario}**.\n"
+            "Sube un PDF de esta asignatura en el panel izquierdo."
         )
 
-        modelo_local = OllamaModel(model="mistral")
-
-        metricas = [
-            FaithfulnessMetric(model=modelo_local),
-            AnswerRelevancyMetric(model=modelo_local),
-            ContextualRecallMetric(model=modelo_local),
-            ToxicityMetric(model=modelo_local),
-            ArgumentCorrectnessMetric(model=modelo_local),
-        ]
-
-        st.info("🧮 Ejecutando evaluación... revisa la terminal para ver los resultados.")
-        evaluate([caso], metricas)
-        st.success("✅ Evaluación completada. Revisa los resultados en la terminal.")
+    except Exception as e:
+        st.error(f"⚠ Error inesperado: {str(e)}")

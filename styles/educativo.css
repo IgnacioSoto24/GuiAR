@@ -1,0 +1,83 @@
+html, body, [class*="css"] {
+    font-family: "Segoe UI", sans-serif;
+}
+
+[data-testid="stSidebar"] {
+    background-color: #f8fafc !important;
+    padding: 1rem !important;
+    border-right: 2px solid #e2e8f0 !important;
+}
+
+.sidebar-title {
+    font-weight: 700;
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+    color: #1e3a8a;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e2e8f0 !important;
+    margin: 1rem 0;
+}
+
+[data-testid="stSidebar"] div:empty {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+[data-testid="stSidebar"] > div > div:not(:has(*)) {
+    display: none !important;
+}
+
+.stTextInput > div > div > input {
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.stSelectbox div[data-baseweb="select"] {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+}
+
+.stRadio > div {
+    gap: 0.3rem !important;
+}
+
+.stRadio label {
+    font-size: 0.9rem;
+}
+
+.stButton>button {
+    background-color: #2563eb !important;
+    color: white !important;
+    border-radius: 10px !important;
+    padding: 0.5rem 1rem !important;
+    border: none !important;
+    transition: 0.2s ease-in-out;
+}
+
+.stButton>button:hover {
+    background-color: #1e40af !important;
+}
+
+.main-title {
+    font-size: 2rem !important;
+    font-weight: bold !important;
+    color: #1e3a8a !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.question-box {
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 1rem;
+    margin-top: 1rem;
+}
