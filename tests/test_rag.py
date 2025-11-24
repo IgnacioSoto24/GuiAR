@@ -25,13 +25,13 @@ def test_respuesta():
     )
 
     # Modelo evaluador de Ollama
-    modelo_local = OllamaModel(model="mistral")  # o "llama3:8b"
+    modelo_local = OllamaModel(model="llama3:8b")
 
     # Definir métricas
     metricas = [
         FaithfulnessMetric(model=modelo_local),
         AnswerRelevancyMetric(model=modelo_local),
-        ContextualRecallMetric(model=modelo_local, threshold=0.0),  # evitar fail por recall bajo
+        ContextualRecallMetric(model=modelo_local, threshold=0.0),
         ToxicityMetric(model=modelo_local),
         ArgumentCorrectnessMetric(model=modelo_local),
     ]
