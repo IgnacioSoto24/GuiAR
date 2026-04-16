@@ -92,3 +92,4 @@ if pregunta:
 
     except Exception as e:
         st.error(f"⚠ Error inesperado: {str(e)}")
+

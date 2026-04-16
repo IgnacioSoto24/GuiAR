@@ -1,9 +1,43 @@
-streamlit
-langchain
-langchain-community
-langchain-ollama
-faiss-cpu
-sentence-transformers
-deepeval
-pypdf
-pandas
+# =========================
+# 🔹 DEPENDENCIAS GENERALES
+# (Usadas en múltiples archivos)
+# =========================
+langchain==0.3.26
+langchain-community==0.3.27
+
+sentence-transformers==5.0.0
+transformers==4.53.2
+torch==2.7.1
+huggingface-hub==0.33.4
+
+
+# =========================
+# 🔹 rag_pipeline.py
+# =========================
+langchain-ollama==0.3.8
+ollama==0.6.0
+
+
+# =========================
+# 🔹 classifier.py
+# =========================
+# Usa Ollama (ya incluido arriba)
+
+
+# =========================
+# 🔹 ingestion.py
+# =========================
+faiss-cpu==1.11.0.post1
+pypdf==5.8.0
+
+
+# =========================
+# 🔹 retriever.py
+# =========================
+# Usa CrossEncoder (ya incluido en sentence-transformers)
+
+
+# =========================
+# 🔹 app.py
+# =========================
+streamlit==1.45.1

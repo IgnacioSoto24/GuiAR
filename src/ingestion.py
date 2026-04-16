@@ -7,11 +7,6 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 def construir_vectorstore(ruta_pdf: str, asignatura: str):
-    """
-    Construye un vectorstore FAISS para una asignatura específica.
-    Optimizado y con validaciones para evitar errores de fragmentación,
-    PDFs mal formados y vectorstores corruptos.
-    """
 
     ruta_guardado = os.path.join("vectorstores", asignatura, "faiss_index")
 

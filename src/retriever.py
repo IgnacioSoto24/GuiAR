@@ -8,9 +8,7 @@ from sentence_transformers import CrossEncoder
 
 
 class RerankRetriever(BaseRetriever):
-    """
-    Retriever compatible con RetrievalQA + Pydantic v2 + reranking.
-    """
+    
 
     vectorstore: Any = Field(...)
     k: int = Field(default=4)
@@ -21,7 +19,6 @@ class RerankRetriever(BaseRetriever):
         super().__init__(**data)
         self.reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
 
-    # ⚠ SOLO ESTE MÉTODO DEBE EXISTIR
     def _get_relevant_documents(self, query: str) -> List[Any]:
         # 1) buscar documentos
         docs = self.vectorstore.similarity_search(query, k=self.fetch_k)
